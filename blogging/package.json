@@ -1,0 +1,25 @@
+{
+    "name": "blog-generator",
+    "version": "1.0.0",
+    "description": "Automated blog post generator using OpenAI models",
+    "main": "dist/index.js",
+    "scripts": {
+        "start": "ts-node src/index.ts",
+        "build": "tsc",
+        "dev": "ts-node-dev --respawn src/index.ts"
+    },
+    "dependencies": {
+        "dotenv": "^16.3.1",
+        "fs-extra": "^11.1.1",
+        "openai": "^4.10.0",
+        "uuid": "^9.0.0"
+    },
+    "devDependencies": {
+        "@types/fs-extra": "^11.0.2",
+        "@types/node": "^20.6.2",
+        "@types/uuid": "^9.0.2",
+        "ts-node": "^10.9.1",
+        "ts-node-dev": "^2.0.0",
+        "typescript": "^5.2.2"
+    }
+}
