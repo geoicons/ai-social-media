@@ -77,7 +77,7 @@ export class BlogGenerator {
     private async generateTitle(question: string): Promise<string> {
         try {
             const response = await this.openai.chat.completions.create({
-                model: "o1", // Fallback to a standard model for basic tasks
+                model: "gpt-4o", // Fallback to a standard model for basic tasks
                 messages: [
                     { role: "system", content: prompts.system },
                     { role: "user", content: prompts.title(question) },
@@ -96,7 +96,7 @@ export class BlogGenerator {
     private async generateDescription(title: string, question: string): Promise<string> {
         try {
             const response = await this.openai.chat.completions.create({
-                model: "o1", // Using a standard model for description
+                model: "gpt-4o", // Using a standard model for description
                 messages: [
                     { role: "system", content: prompts.system },
                     { role: "user", content: prompts.description(title, question) },
@@ -114,7 +114,7 @@ export class BlogGenerator {
     private async generateMetaDescription(title: string): Promise<string> {
         try {
             const response = await this.openai.chat.completions.create({
-                model: "o1", // Using a standard model for meta description
+                model: "gpt-4o", // Using a standard model for meta description
                 messages: [
                     { role: "system", content: prompts.system },
                     { role: "user", content: prompts.metaDescription(title) },
@@ -160,7 +160,7 @@ export class BlogGenerator {
     private async generateSocialMediaPost(title: string, description: string): Promise<string> {
         try {
             const response = await this.openai.chat.completions.create({
-                model: "o1", // Using a standard model for social media post
+                model: "gpt-4o", // Using a standard model for social media post
                 messages: [
                     { role: "system", content: prompts.system },
                     { role: "user", content: prompts.socialMediaPost(title, description) },
@@ -178,7 +178,7 @@ export class BlogGenerator {
     private async generateImagePrompt(title: string, description: string, content: string): Promise<string> {
         try {
             const response = await this.openai.chat.completions.create({
-                model: "o1", // Using a standard model for image prompt
+                model: "gpt-4o", // Using a standard model for image prompt
                 messages: [
                     { role: "system", content: prompts.system },
                     { role: "user", content: prompts.imagePrompt(title, description, content) },
@@ -204,7 +204,7 @@ export class BlogGenerator {
             }
 
             const response = await this.openai.images.generate({
-                model: "dall-e-3", // Using DALL-E 3 instead of 4o which might not be available
+                model: "dall-e-3", // Using DALL-E 3 instead of gpt-4o which might not be available
                 prompt,
                 n: 1,
                 size: "1024x1024",

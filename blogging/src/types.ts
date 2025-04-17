@@ -7,6 +7,10 @@ export interface QuestionsFile {
     questions: Question[];
 }
 
+export interface ProcessedQuestionsFile {
+    processedIds: string[];
+}
+
 export interface BlogArticle {
     id: string;
     question: string;

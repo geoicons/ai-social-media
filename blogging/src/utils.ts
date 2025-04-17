@@ -1,6 +1,6 @@
 import fs from "fs-extra";
 import path from "path";
-import { BlogArticle, Question, QuestionsFile } from "./types";
+import { BlogArticle, Question, QuestionsFile, ProcessedQuestionsFile } from "./types";
 
 export async function ensureOutputDirectory(outputDir: string): Promise<void> {
     await fs.ensureDir(outputDir);
@@ -20,7 +20,7 @@ export async function loadQuestionsFile(filePath: string): Promise<QuestionsFile
 }
 
 export async function saveBlogContent(outputDir: string, article: BlogArticle): Promise<void> {
-    const sanitizedTitle = article.title
+    const sanitizedTitle = article.question
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)/g, "");
@@ -61,7 +61,7 @@ ${article.content}
 }
 
 export async function saveImage(outputDir: string, article: BlogArticle, imageData: Buffer): Promise<string> {
-    const sanitizedTitle = article.title
+    const sanitizedTitle = article.question
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)/g, "");
@@ -73,4 +73,45 @@ export async function saveImage(outputDir: string, article: BlogArticle, imageDa
     await fs.writeFile(imagePath, imageData);
 
     return imagePath;
+}
+
+const PROCESSED_QUESTIONS_FILE = path.join(process.cwd(), "outputs", "processed-questions.json");
+
+export async function loadProcessedQuestions(): Promise<string[]> {
+    try {
+        if (await fs.pathExists(PROCESSED_QUESTIONS_FILE)) {
+            const data = (await fs.readJson(PROCESSED_QUESTIONS_FILE)) as ProcessedQuestionsFile;
+            return data.processedIds || [];
+        }
+        return [];
+    } catch (error) {
+        console.error("Error loading processed questions:", error);
+        return [];
+    }
+}
+
+export async function saveProcessedQuestion(questionId: string): Promise<void> {
+    try {
+        let processedIds: string[] = [];
+
+        // Load existing processed questions if file exists
+        if (await fs.pathExists(PROCESSED_QUESTIONS_FILE)) {
+            const data = (await fs.readJson(PROCESSED_QUESTIONS_FILE)) as ProcessedQuestionsFile;
+            processedIds = data.processedIds || [];
+        }
+
+        // Add the new question ID if it's not already in the list
+        if (!processedIds.includes(questionId)) {
+            processedIds.push(questionId);
+        }
+
+        // Save the updated list
+        await fs.writeJson(PROCESSED_QUESTIONS_FILE, { processedIds }, { spaces: 2 });
+    } catch (error) {
+        console.error("Error saving processed question:", error);
+    }
+}
+
+export function filterUnprocessedQuestions(questions: Question[], processedIds: string[]): Question[] {
+    return questions.filter((question) => !processedIds.includes(question.id));
 }
