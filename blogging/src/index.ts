@@ -22,7 +22,10 @@ const OUTPUT_DIR = path.join(__dirname, "../outputs");
 const forceRegenerate = process.argv.includes("--force") || process.argv.includes("-f");
 
 // Limit the number of questions to process
-const LIMIT = 1;
+const MAX_QUESTIONS = 10;
+const LIMIT = process.argv.includes("--max")
+    ? parseInt(process.argv[process.argv.indexOf("--max") + 1])
+    : MAX_QUESTIONS;
 
 async function main() {
     try {

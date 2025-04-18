@@ -6,17 +6,22 @@ import { saveImage, saveBlogContent } from "./utils";
 
 export class BlogGenerator {
     private openai: OpenAI;
+    private currentQuestion: string | null;
 
     constructor(apiKey: string) {
         this.openai = new OpenAI({
             apiKey,
         });
+        this.currentQuestion = null;
     }
 
     async generateBlogArticle(options: GenerationOptions): Promise<BlogArticle> {
         const { question, outputDir } = options;
 
         console.log(`Generating blog article for question: "${question.question}"`);
+
+        // Store the current question for image generation
+        this.currentQuestion = question.question;
 
         try {
             // Step 1: Generate title
@@ -71,6 +76,9 @@ export class BlogGenerator {
         } catch (error) {
             console.error("Error generating blog article:", error);
             throw error;
+        } finally {
+            // Reset the current question regardless of success or failure
+            this.currentQuestion = null;
         }
     }
 
@@ -220,7 +228,7 @@ export class BlogGenerator {
             // Create a dummy article object just for saving the image
             const dummyArticle: BlogArticle = {
                 id: "",
-                question: "",
+                question: this.currentQuestion || title, // Use the current question or title as fallback
                 title,
                 description: "",
                 metaDescription: "",
